@@ -1,5 +1,4 @@
 If (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    # Restart the script as admin
     Write-Host "Requesting administrative privileges..."
     Start-Process powershell "-File `"$PSCommandPath`"" -Verb RunAs
     Exit
