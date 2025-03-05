@@ -9,3 +9,5 @@ Because with a lot of terminal user, the Task Manager becomes very slow and unus
 - Give admin privileges to the script (if not started as admin) 
 - Type in the desired username
 - GG
+
+_soon rewriting for the winform gui_
