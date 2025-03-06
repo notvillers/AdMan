@@ -19,7 +19,7 @@ Add-Type -AssemblyName System.Windows.Forms
 $mainForm = New-Object System.Windows.Forms.Form
 $mainForm.Text = “AdMan”
 $mainForm.Width = 300
-$mainForm.Height = 200
+$mainForm.Height = 300
 $mainForm.StartPosition = “CenterScreen”
 
 # Header Label
@@ -31,12 +31,19 @@ $headerLabel.ForeColor = "White"
 $headerLabel.BackColor = "Black"
 $mainForm.Controls.Add($headerLabel)
 
+# Kicker Header
+$kickerLabel = New-Object System.Windows.Forms.Label
+$kickerLabel.Text = “Kick by username:”
+$kickerLabel.AutoSize = $true
+$kickerLabel.Location = New-Object System.Drawing.Point(20, 40)
+$mainForm.Controls.Add($kickerLabel)
+
 # Kicker Textbox
 $kickerTextBoxPlaceholder = "username"
 $kickerTextBox = New-Object System.Windows.Forms.TextBox
 $kickerTextBox.ForeColor = "Gray"
 $kickerTextBox.Text = $kickerTextBoxPlaceholder
-$kickerTextBox.Location = New-Object System.Drawing.Point(20, 50)
+$kickerTextBox.Location = New-Object System.Drawing.Point(20, 60)
 $kickerTextBox.Size = New-Object System.Drawing.Size(105, 20)
 $mainForm.Controls.Add($kickerTextBox)
 $kickerTextBox.Add_GotFocus({
@@ -55,7 +62,7 @@ $kickerTextBox.Add_LostFocus({
 # Kicker Button
 $kickerButton = New-Object System.Windows.Forms.Button
 $kickerButton.Text = “Kick”
-$kickerButton.Location = New-Object System.Drawing.Point(150, 50)
+$kickerButton.Location = New-Object System.Drawing.Point(150, 60)
 $kickerButton.Size = New-Object System.Drawing.Size(85, 20)
 $mainForm.Controls.Add($kickerButton)
 
@@ -65,15 +72,22 @@ $line.BorderStyle = [System.Windows.Forms.BorderStyle]::Fixed3D
 $line.AutoSize = $false
 $line.Width = 300
 $line.Height = 2
-$line.Location = New-Object System.Drawing.Point(0, 75)
+$line.Location = New-Object System.Drawing.Point(0, 85)
 $mainForm.Controls.Add($line)
+
+# Hostname Lookup Header
+$hostnameLookupLabel = New-Object System.Windows.Forms.Label
+$hostnameLookupLabel.Text = “Get hostname for username:”
+$hostnameLookupLabel.AutoSize = $true
+$hostnameLookupLabel.Location = New-Object System.Drawing.Point(20, 95)
+$mainForm.Controls.Add($hostnameLookupLabel)
 
 # Hostname Lookup Textbox
 $hostnameLookupTextboxPlaceholder = "username"
 $hostnameLookupTextbox = New-Object System.Windows.Forms.TextBox
 $hostnameLookupTextbox.ForeColor = "Gray"
 $hostnameLookupTextbox.Text = $hostnameLookupTextboxPlaceholder
-$hostnameLookupTextbox.Location = New-Object System.Drawing.Point(20, 80)
+$hostnameLookupTextbox.Location = New-Object System.Drawing.Point(20, 115)
 $hostnameLookupTextbox.Size = New-Object System.Drawing.Size(105, 20)
 $mainForm.Controls.Add($hostnameLookupTextbox)
 $hostnameLookupTextbox.Add_GotFocus({
@@ -92,8 +106,8 @@ $hostnameLookupTextbox.Add_LostFocus({
 # Hostname Lookup Button
 $hostnameLookupButton = New-Object System.Windows.Forms.Button
 $hostnameLookupButton.Text = "Get hostname"
+$hostnameLookupButton.Location = New-Object System.Drawing.Point(150, 115)
 $hostnameLookupButton.Size = New-Object System.Drawing.Size(85, 20)
-$hostnameLookupButton.Location = New-Object System.Drawing.Point(150, 80)
 $mainForm.Controls.Add($hostnameLookupButton)
 
 # Create a horizontal line using a Label
@@ -102,14 +116,15 @@ $line.BorderStyle = [System.Windows.Forms.BorderStyle]::Fixed3D
 $line.AutoSize = $false
 $line.Width = 300
 $line.Height = 2
-$line.Location = New-Object System.Drawing.Point(0, 105)
+$line.Location = New-Object System.Drawing.Point(0, 140)
 $mainForm.Controls.Add($line)
 
 # Info Label
 $infoLabel = New-Object System.Windows.Forms.Label
 $infoLabel.Text = ""
-$infoLabel.AutoSize = $true
-$infoLabel.Location = New-Object System.Drawing.Point(10, 130)
+$infoLabel.Size = New-Object System.Drawing.Size(240, 40)
+$infoLabel.Location = New-Object System.Drawing.Point(20, 200)
+$infoLabel.BorderStyle = [System.Windows.Forms.BorderStyle]::FixedSingle
 $mainForm.Controls.Add($infoLabel)
 
 function userKicker {
@@ -165,6 +180,7 @@ function hostnameLookup {
     $infoLabel.Text = ""
     $moduleName = "PSTerminalServices"
     if (Get-Module -Name $moduleName -ListAvailable) {
+        $infoLabel.ForeColor = "Orange"
         $infoLabel.Text = "$moduleName is installed."
         if (!($hostnameLookupTextbox -eq $hostnameLookupTextboxPlaceholder)) {
             $userName = $hostnameLookupTextbox.Text
@@ -184,8 +200,10 @@ function hostnameLookup {
             }
         }
     } else {
-        $infoLabel.BackColor = "Yellow"
-        $infoLabel.Text = "$moduleName is not installed, install it first..."
+        $infoLabel.ForeColor = "Orange"
+        $infoLabel.Text = "$moduleName is not installed, trying to install..."
+        Start-Process powershell "Install-Module -Name PSTerminalServices" -Verb RunAs
+        $infoLabel.Text = "Check if the installation of '$moduleName' succeeded"
     }
 }
 
@@ -210,4 +228,4 @@ if (Test-Path $iconPath) {
 }
 
 # Show Form
-$mainForm.ShowDialog() 
+$mainForm.ShowDialog()
