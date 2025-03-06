@@ -130,29 +130,40 @@ $mainForm.Controls.Add($infoLabel)
 function userKicker {
     $infoLabel.ForeColor = "Black"
     $infoLabel.Text = ""
+    # If username is given
     if (!($kickerTextBox.Text -eq $kickerTextBoxPlaceholder)) {
         $userToKick = $kickerTextBox.Text
         $userName = $userToKick
+        # Get user query
         $userQuery = (query user | findstr "$userName")
+        # If can not get user query
         if (!($userQuery)) {
             $infoLabel.ForeColor = "Red"
             $infoLabel.Text = "'$userName' not found"
+        #If user query got
         } else {
             $infoLabel.ForeColor = "Green"
             $infoLabel.Text = "'$userName' found"
+            # Get hostname
             $hostName = (hostname)
+            # If can not get hostname
             if (!(hostname)) {
                 $infoLabel.ForeColor = "Red"
                 $infoLabel.Text = "Can't get hostname"
+            # If hostname got
             } else {
                 $infoLabel.Text = "Hostname '$hostName'"
                 $sessionId = ($userQuery -split '\s+')[2]
                 $infoLabel.Text = "Kicking"
+                # Kicking user
                 logoff $sessionId /server:$hostName
+                # Get user query
                 $userQuery = (query user | findstr "$userName")
                 $infoLabel.Text = "Rechecking"
+                # If can not get user query
                 if (!($userQuery)) {
                     $infoLabel.Text = "Kicked '$userName'"
+                # If user query got
                 } else {
                     $infoLabel.ForeColor = "Red"
                     $infoLabel.Text = "Recheck shows '$userName' still logged in"
@@ -179,26 +190,34 @@ function hostnameLookup {
     $infoLabel.ForeColor = "Black"
     $infoLabel.Text = ""
     $moduleName = "PSTerminalServices"
+    # Check if module is installed
     if (Get-Module -Name $moduleName -ListAvailable) {
         $infoLabel.ForeColor = "Orange"
         $infoLabel.Text = "$moduleName is installed."
+        #if hostname is given
         if (!($hostnameLookupTextbox -eq $hostnameLookupTextboxPlaceholder)) {
             $userName = $hostnameLookupTextbox.Text
+            # Get session
             $queryResult = (Get-TSSession -UserName $userName)
+            # If session can not be found
             if (!($queryResult)) {
                 $infoLabel.ForeColor = "Red"
                 $infoLabel.Text = "'$userName' not found"
+            # If session found
             } else {
                 $hostName = ($queryResult.ClientName)
+                # If can not recover hostname
                 if (!($hostName)) {
                     $infoLabel.ForeColor = "Red"
                     $infoLabel.Text = "Hostname can not be recovered"
+                # If hostname is recovered
                 } else {
                     $infoLabel.ForeColor = "Green"
                     $infoLabel.Text = "Hostname for '$userName': $hostName"
                 }
             }
         }
+    # If not then try to install
     } else {
         $infoLabel.ForeColor = "Orange"
         $infoLabel.Text = "$moduleName is not installed, trying to install..."
