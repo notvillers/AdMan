@@ -128,7 +128,7 @@ $infoLabel.BorderStyle = [System.Windows.Forms.BorderStyle]::FixedSingle
 $mainForm.Controls.Add($infoLabel)
 
 function userKicker {
-    $infoLabel.ForeColor = "Black"
+    $infoLabel.BackColor = ""
     $infoLabel.Text = ""
     # If username is given
     if (!($kickerTextBox.Text -eq $kickerTextBoxPlaceholder)) {
@@ -138,17 +138,17 @@ function userKicker {
         $userQuery = (query user | findstr "$userName")
         # If can not get user query
         if (!($userQuery)) {
-            $infoLabel.ForeColor = "Red"
+            $infoLabel.BackColor = "Red"
             $infoLabel.Text = "'$userName' not found"
         #If user query got
         } else {
-            $infoLabel.ForeColor = "Green"
+            $infoLabel.BackColor = "Green"
             $infoLabel.Text = "'$userName' found"
             # Get hostname
             $hostName = (hostname)
             # If can not get hostname
             if (!(hostname)) {
-                $infoLabel.ForeColor = "Red"
+                $infoLabel.BackColor = "Red"
                 $infoLabel.Text = "Can't get hostname"
             # If hostname got
             } else {
@@ -165,7 +165,7 @@ function userKicker {
                     $infoLabel.Text = "Kicked '$userName'"
                 # If user query got
                 } else {
-                    $infoLabel.ForeColor = "Red"
+                    $infoLabel.BackColor = "Red"
                     $infoLabel.Text = "Recheck shows '$userName' still logged in"
                 }
             }
@@ -187,12 +187,12 @@ $kickerTextBox.Add_KeyDown({
 
 # Hostname Lookup Function
 function hostnameLookup {
-    $infoLabel.ForeColor = "Black"
+    $infoLabel.BackColor = ""
     $infoLabel.Text = ""
     $moduleName = "PSTerminalServices"
     # Check if module is installed
     if (Get-Module -Name $moduleName -ListAvailable) {
-        $infoLabel.ForeColor = "Orange"
+        $infoLabel.BackColor = "Orange"
         $infoLabel.Text = "$moduleName is installed."
         #if hostname is given
         if (!($hostnameLookupTextbox -eq $hostnameLookupTextboxPlaceholder)) {
@@ -201,25 +201,25 @@ function hostnameLookup {
             $queryResult = (Get-TSSession -UserName $userName)
             # If session can not be found
             if (!($queryResult)) {
-                $infoLabel.ForeColor = "Red"
+                $infoLabel.BackColor = "Red"
                 $infoLabel.Text = "'$userName' not found"
             # If session found
             } else {
                 $hostName = ($queryResult.ClientName)
                 # If can not recover hostname
                 if (!($hostName)) {
-                    $infoLabel.ForeColor = "Red"
+                    $infoLabel.BackColor = "Red"
                     $infoLabel.Text = "Hostname can not be recovered"
                 # If hostname is recovered
                 } else {
-                    $infoLabel.ForeColor = "Green"
+                    $infoLabel.BackColor = "Lime"
                     $infoLabel.Text = "Hostname for '$userName': $hostName"
                 }
             }
         }
     # If not then try to install
     } else {
-        $infoLabel.ForeColor = "Orange"
+        $infoLabel.BackColor = "Yellow"
         $infoLabel.Text = "$moduleName is not installed, trying to install..."
         Start-Process powershell "Install-Module -Name PSTerminalServices" -Verb RunAs
         $infoLabel.Text = "Check if the installation of '$moduleName' succeeded"
@@ -248,3 +248,4 @@ if (Test-Path $iconPath) {
 
 # Show Form
 $mainForm.ShowDialog()
+ 
