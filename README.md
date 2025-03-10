@@ -1,5 +1,5 @@
 # AdMan
-Lightweight admin manager for Windows.
+Lightweight admin tool for Windows.
 
 ## Usage
 - Kick users from the current server by username
