@@ -1,3 +1,5 @@
+![AdMan](adman.ico)
+
 # AdMan
 Lightweight admin tool for Windows.
 
