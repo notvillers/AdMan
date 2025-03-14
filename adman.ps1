@@ -44,6 +44,13 @@ $global:lineSizeHeight = 2
 # Horizontal line default location
 $global:lineDefaultLocationX = 0
 $global:lineDefaultLocationY = 85
+# Info label
+# Info label size
+$infoLabelSizeWidth = $formSizeWidth - 60
+$infoLabelSizeHeight = 40
+# Info label default location
+$infoLabelDefaultLocationX = 20
+$infoLabelDefaultLocationY = $formSizeHeight - 100
 # Location increaser
 $global:xIncreaser = 55
 $global:count = 0
@@ -58,9 +65,9 @@ $mainForm.StartPosition = "CenterScreen"
 
 # Header Label
 $headerLabel = New-Object System.Windows.Forms.Label
-$headerLabel.Text = "AdMan"
+$headerLabel.Text = " AdMan "
 $headerLabel.AutoSize = $true
-$headerLabel.Location = New-Object System.Drawing.Point(110, 10)
+$headerLabel.Location = New-Object System.Drawing.Point(130, 10)
 $headerLabel.ForeColor = "White"
 $headerLabel.BackColor = "Black"
 $mainForm.Controls.Add($headerLabel)
@@ -317,8 +324,8 @@ $mainForm.Controls.Add($portProcessButton)
 # Info Label
 $infoLabel = New-Object System.Windows.Forms.Label
 $infoLabel.Text = ""
-$infoLabel.Size = New-Object System.Drawing.Size(260, 40)
-$infoLabel.Location = New-Object System.Drawing.Point(20, 260)
+$infoLabel.Size = New-Object System.Drawing.Size($infoLabelSizeWidth, $infoLabelSizeHeight)
+$infoLabel.Location = New-Object System.Drawing.Point($infoLabelDefaultLocationX, $infoLabelDefaultLocationY)
 $infoLabel.BorderStyle = [System.Windows.Forms.BorderStyle]::FixedSingle
 $mainForm.Controls.Add($infoLabel)
 
@@ -331,18 +338,24 @@ function get_process_id_for_port{
         $infoLabel.BackColor = "Red"
         $infoLabel.Text = "Port is not given"
     } else {
-        if ($port -notlike ":*") {
-            $port = ":" + $port
-        }
-        $result = (netstat -ano | findstr $port)
-        if (!($result)) {
+        if ($port.Length -lt 4) {
             $infoLabel.BackColor = "Red"
-            $infoLabel.Text = "Port '$port' is not found"
+            $infoLabel.Text = "Port is not valid"
+            return
         } else {
-            $infoLabel.BackColor = "Lime"
-            $infoLabel.Text = "Port '$port' is found"
-            $processId = ($result -split '\s+')[5]
-            $infoLabel.Text = "Process ID for port '$port': '$processId'"
+            if ($port -notlike ":*") {
+                $port = ":" + $port
+            }
+            $result = (netstat -ano | findstr $port)
+            if (!($result)) {
+                $infoLabel.BackColor = "Yellow"
+                $infoLabel.Text = "Port '$port' is not found"
+            } else {
+                $infoLabel.BackColor = "Yellow"
+                $infoLabel.Text = "Port '$port' is found"
+                $processId = ($result -split '\s+')[5]
+                $infoLabel.Text = "Process ID for port '$port': '$processId'"
+            }
         }
     }
 }
