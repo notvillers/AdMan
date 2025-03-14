@@ -1,4 +1,4 @@
-If (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+﻿If (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
     Write-Host "Requesting administrative privileges..."
     Start-Process powershell "-File `"$PSCommandPath`"" -Verb RunAs
     Exit
@@ -17,14 +17,14 @@ $consolePtr = [Console.Window]::GetConsoleWindow()
 # Main Form
 Add-Type -AssemblyName System.Windows.Forms
 $mainForm = New-Object System.Windows.Forms.Form
-$mainForm.Text = “AdMan”
+$mainForm.Text = "AdMan"
 $mainForm.Width = 300
 $mainForm.Height = 300
-$mainForm.StartPosition = “CenterScreen”
+$mainForm.StartPosition = "CenterScreen"
 
 # Header Label
 $headerLabel = New-Object System.Windows.Forms.Label
-$headerLabel.Text = “AdMan”
+$headerLabel.Text = "AdMan"
 $headerLabel.AutoSize = $true
 $headerLabel.Location = New-Object System.Drawing.Point(110, 10)
 $headerLabel.ForeColor = "White"
@@ -33,7 +33,7 @@ $mainForm.Controls.Add($headerLabel)
 
 # Kicker Header
 $kickerLabel = New-Object System.Windows.Forms.Label
-$kickerLabel.Text = “Kick by username:”
+$kickerLabel.Text = "Kick by username:"
 $kickerLabel.AutoSize = $true
 $kickerLabel.Location = New-Object System.Drawing.Point(20, 40)
 $mainForm.Controls.Add($kickerLabel)
@@ -61,7 +61,7 @@ $kickerTextBox.Add_LostFocus({
 
 # Kicker Button
 $kickerButton = New-Object System.Windows.Forms.Button
-$kickerButton.Text = “Kick”
+$kickerButton.Text = "Kick"
 $kickerButton.Location = New-Object System.Drawing.Point(150, 60)
 $kickerButton.Size = New-Object System.Drawing.Size(85, 20)
 $mainForm.Controls.Add($kickerButton)
@@ -77,7 +77,7 @@ $mainForm.Controls.Add($line)
 
 # Hostname Lookup Header
 $hostnameLookupLabel = New-Object System.Windows.Forms.Label
-$hostnameLookupLabel.Text = “Get hostname for username:”
+$hostnameLookupLabel.Text = "Get hostname for username:"
 $hostnameLookupLabel.AutoSize = $true
 $hostnameLookupLabel.Location = New-Object System.Drawing.Point(20, 95)
 $mainForm.Controls.Add($hostnameLookupLabel)
