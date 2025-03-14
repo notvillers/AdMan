@@ -37,7 +37,13 @@ $global:buttonSizeHeight = 20
 # Button default location
 $global:buttonDefaultLocationX = 150
 $global:buttonDefaultLocationY = 60
-
+# Horizontal Line
+# Horizontal line size
+$global:lineSizeWidth = 320
+$global:lineSizeHeight = 2
+# Horizontal line default location
+$global:lineDefaultLocationX = 0
+$global:lineDefaultLocationY = 85
 # Location increaser
 $global:xIncreaser = 55
 $global:count = 0
@@ -66,8 +72,8 @@ function Add-Label {
     $header = New-Object System.Windows.Forms.Label
     $header.Text = $text
     $header.AutoSize = $true
-    $x = ($global:labelDefaultLocationX + ($global:count * $global:xIncreaser))
-    $y = $global:labelDefaultLocationY
+    $x = $global:labelDefaultLocationX
+    $y = $global:labelDefaultLocationY + ($global:count * $global:xIncreaser)
     $header.Location = New-Object System.Drawing.Point($x, $y)
     return $header
 }
@@ -79,8 +85,8 @@ function Add-Textbox {
     $textbox = New-Object System.Windows.Forms.TextBox
     $textbox.ForeColor = "Gray"
     $textbox.Text = $placeholder
-    $x = $global:textBoxDefaultLocationX + ($global:count * $global:xIncreaser)
-    $y = $global:textBoxDefaultLocationY
+    $x = $global:textBoxDefaultLocationX
+    $y = $global:textBoxDefaultLocationY + ($global:count * $global:xIncreaser)
     $textbox.Location = New-Object System.Drawing.Point($x, $y)
     $textbox.Size = New-Object System.Drawing.Size($global:textboxSizeWidth, $global:textboxSizeHeight)
     return $textbox
@@ -126,11 +132,30 @@ function Add-Button {
     )
     $button = New-Object System.Windows.Forms.Button
     $button.Text = $text
-    $x = $global:buttonDefaultLocationX + ($global:count * $global:xIncreaser)
-    $y = $global:buttonDefaultLocationY
+    $x = $global:buttonDefaultLocationX
+    $y = $global:buttonDefaultLocationY + ($global:count * $global:xIncreaser)
     $button.Location = New-Object System.Drawing.Point($x, $y)
     $button.Size = New-Object System.Drawing.Size($global:buttonSizeWidth, $global:buttonSizeHeight)
     return $button
+}
+
+function Add-Horline {
+    $line = New-Object System.Windows.Forms.Label
+    $line.BorderStyle = [System.Windows.Forms.BorderStyle]::Fixed3D
+    $line.AutoSize = $false
+    $line.Width = $global:lineSizeWidth
+    $line.Height = $global:lineSizeHeight
+    $x = $global:lineDefaultLocationX
+    $y = $global:lineDefaultLocationY + ($global:count * $global:xIncreaser)
+    $line.Location = New-Object System.Drawing.Point($x, $y)
+    return $line
+}
+
+function Count-Increase {
+    param (
+        [int]$increment
+    )
+    $global:count = $global:count + $increment
 }
 
 # Kicker Header
@@ -145,107 +170,12 @@ $kickerTextBox.Add_GotFocus({TextBox-OnFocus -textbox $kickerTextBox -placeholde
 $kickerTextBox.Add_LostFocus({TextBox-LostFocus -textbox $kickerTextBox -placeholder $kickerTextBoxPlaceholder})
 
 # Kicker Button
-$kickerButton = New-Object System.Windows.Forms.Button
-$kickerButton.Text = "Kick"
-$kickerButton.Location = New-Object System.Drawing.Point(150, 60)
-$kickerButton.Size = New-Object System.Drawing.Size($buttonSizeWidth, $buttonSizeHeight)
+$kickerButton = Add-Button -text "Kick user"
 $mainForm.Controls.Add($kickerButton)
 
 # Create a horizontal line using a Label
-$line = New-Object System.Windows.Forms.Label
-$line.BorderStyle = [System.Windows.Forms.BorderStyle]::Fixed3D
-$line.AutoSize = $false
-$line.Width = 300
-$line.Height = 2
-$line.Location = New-Object System.Drawing.Point(0, 85)
+$line = Add-Horline
 $mainForm.Controls.Add($line)
-
-# Hostname Lookup Header
-$hostnameLookupLabel = New-Object System.Windows.Forms.Label
-$hostnameLookupLabel.Text = "Get hostname for username:"
-$hostnameLookupLabel.AutoSize = $true
-$hostnameLookupLabel.Location = New-Object System.Drawing.Point(20, 95)
-$mainForm.Controls.Add($hostnameLookupLabel)
-
-# Hostname Lookup Textbox
-$hostnameLookupTextboxPlaceholder = "username"
-$hostnameLookupTextbox = New-Object System.Windows.Forms.TextBox
-$hostnameLookupTextbox.ForeColor = "Gray"
-$hostnameLookupTextbox.Text = $hostnameLookupTextboxPlaceholder
-$hostnameLookupTextbox.Location = New-Object System.Drawing.Point(20, 115)
-$hostnameLookupTextbox.Size = New-Object System.Drawing.Size($textboxSizeWidth, $textboxSizeHeight)
-$mainForm.Controls.Add($hostnameLookupTextbox)
-$hostnameLookupTextbox.Add_GotFocus({
-    if ($hostnameLookupTextbox.Text -eq $hostnameLookupTextboxPlaceholder) {
-        $hostnameLookupTextbox.Text = ""
-        $hostnameLookupTextbox.ForeColor = "Black"
-    }
-})
-$hostnameLookupTextbox.Add_LostFocus({
-    if ($hostnameLookupTextbox.Text -eq "") {
-        $hostnameLookupTextbox.Text = $hostnameLookupTextboxPlaceholder
-        $hostnameLookupTextbox.ForeColor = "Gray"
-    }
-})
-
-# Hostname Lookup Button
-$hostnameLookupButton = New-Object System.Windows.Forms.Button
-$hostnameLookupButton.Text = "Get hostname"
-$hostnameLookupButton.Location = New-Object System.Drawing.Point(150, 115)
-$hostnameLookupButton.Size = New-Object System.Drawing.Size($buttonSizeWidth, $buttonSizeHeight)
-$mainForm.Controls.Add($hostnameLookupButton)
-
-# Create a horizontal line using a Label
-$line = New-Object System.Windows.Forms.Label
-$line.BorderStyle = [System.Windows.Forms.BorderStyle]::Fixed3D
-$line.AutoSize = $false
-$line.Width = 300
-$line.Height = 2
-$line.Location = New-Object System.Drawing.Point(0, 140)
-$mainForm.Controls.Add($line)
-
-# Get process id for port header
-$hostnameLookupLabel = New-Object System.Windows.Forms.Label
-$hostnameLookupLabel.Text = "Get process ID for port:"
-$hostnameLookupLabel.AutoSize = $true
-$hostnameLookupLabel.Location = New-Object System.Drawing.Point(20, 145)
-$mainForm.Controls.Add($hostnameLookupLabel)
-
-# Get process id for port textbox
-$portProcessTextboxPlaceholder = "port"
-$portProcessTextbox = New-Object System.Windows.Forms.TextBox
-$portProcessTextbox.ForeColor = "Gray"
-$portProcessTextbox.Text = $portProcessTextboxPlaceholder
-$portProcessTextbox.Location = New-Object System.Drawing.Point(20, 165)
-$portProcessTextbox.Size = New-Object System.Drawing.Size($textboxSizeWidth, $textboxSizeHeight)
-$mainForm.Controls.Add($portProcessTextbox)
-$portProcessTextbox.Add_GotFocus({
-    if ($portProcessTextbox.Text -eq $portProcessTextboxPlaceholder) {
-        $portProcessTextbox.Text = ""
-        $portProcessTextbox.ForeColor = "Black"
-    }
-})
-$portProcessTextbox.Add_LostFocus({
-    if ($portProcessTextbox.Text -eq "") {
-        $portProcessTextbox.Text = $portProcessTextboxPlaceholder
-        $portProcessTextbox.ForeColor = "Gray"
-    }
-})
-
-# Get process id for port button
-$portProcessButton = New-Object System.Windows.Forms.Button
-$portProcessButton.Text = "Get process ID"
-$portProcessButton.Location = New-Object System.Drawing.Point(150, 165)
-$portProcessButton.Size = New-Object System.Drawing.Size($buttonSizeWidth, $buttonSizeHeight)
-$mainForm.Controls.Add($portProcessButton)
-
-# Info Label
-$infoLabel = New-Object System.Windows.Forms.Label
-$infoLabel.Text = ""
-$infoLabel.Size = New-Object System.Drawing.Size(260, 40)
-$infoLabel.Location = New-Object System.Drawing.Point(20, 260)
-$infoLabel.BorderStyle = [System.Windows.Forms.BorderStyle]::FixedSingle
-$mainForm.Controls.Add($infoLabel)
 
 function userKicker {
     $infoLabel.BackColor = ""
@@ -292,14 +222,33 @@ function userKicker {
         }
     }
 }
+# Enter key press for kicker textbox
 $kickerTextBox.Add_KeyDown({TextBox-KeyPress -textbox $kickerTextBox -key "Enter" -action ${Function:UserKicker}})
-
 # Kicker Button Add Click
 $kickerButton.Add_Click({
     userKicker
 })
 
-# here
+Count-Increase -increment 1
+
+# Hostname Lookup Header
+$hostnameLookupLabel = Add-Label -text "Get hostname for username:"
+$mainForm.Controls.Add($hostnameLookupLabel)
+
+# Hostname Lookup Textbox
+$hostnameLookupTextboxPlaceholder = "username"
+$hostnameLookupTextbox = Add-Textbox -placeholder $hostnameLookupTextboxPlaceholder
+$mainForm.Controls.Add($hostnameLookupTextbox)
+$hostnameLookupTextbox.Add_GotFocus({TextBox-OnFocus -textbox $hostnameLookupTextbox -placeholder $hostnameLookupTextboxPlaceholder})
+$hostnameLookupTextbox.Add_LostFocus({TextBox-LostFocus -textbox $hostnameLookupTextbox -placeholder $hostnameLookupTextboxPlaceholder})
+
+# Hostname Lookup Button
+$hostnameLookupButton = Add-Button -text "Get hostname"
+$mainForm.Controls.Add($hostnameLookupButton)
+
+# Create a horizontal line using a Label
+$line = Add-Horline
+$mainForm.Controls.Add($line)
 
 # Hostname Lookup Function
 function hostnameLookup {
@@ -341,20 +290,42 @@ function hostnameLookup {
         $infoLabel.Text = "Check if the installation of '$moduleName' succeeded"
     }
 }
-
+# Hostname Lookup Textbox Enter
+$hostnameLookupTextbox.Add_KeyDown({TextBox-KeyPress -textbox $hostnameLookupTextbox -key "Enter" -action ${Function:HostnameLookup}})
 # Hostname Lookup Button Add Click
 $hostnameLookupButton.Add_Click({
     hostnameLookup
 })
 
-# Hostname Lookup Textbox Enter
-$hostnameLookupTextbox.Add_KeyDown({
-    if ($_.KeyCode -eq "Enter") {
-        hostnameLookup
-    }
-})
+Count-Increase -increment 1
+
+# Get process id for port header
+$hostnameLookupLabel = Add-Label -text "Get process ID for port:"
+$mainForm.Controls.Add($hostnameLookupLabel)
+
+# Get process id for port textbox
+$portProcessTextboxPlaceholder = "port"
+$portProcessTextbox = Add-Textbox -placeholder $portProcessTextboxPlaceholder
+$mainForm.Controls.Add($portProcessTextbox)
+$portProcessTextbox.Add_GotFocus({TextBox-OnFocus -textbox $portProcessTextbox -placeholder $portProcessTextboxPlaceholder})
+$portProcessTextbox.Add_LostFocus({TextBox-LostFocus -textbox $portProcessTextbox -placeholder $portProcessTextboxPlaceholder})
+
+# Get process id for port button
+$portProcessButton = Add-Button -text "Get process ID"
+$mainForm.Controls.Add($portProcessButton)
+
+# Info Label
+$infoLabel = New-Object System.Windows.Forms.Label
+$infoLabel.Text = ""
+$infoLabel.Size = New-Object System.Drawing.Size(260, 40)
+$infoLabel.Location = New-Object System.Drawing.Point(20, 260)
+$infoLabel.BorderStyle = [System.Windows.Forms.BorderStyle]::FixedSingle
+$mainForm.Controls.Add($infoLabel)
 
 # Check process id for port
+function get_process_id_for_port{
+    Write-Host "Get process id for port"
+}
 
 # Icon
 $scriptDirectory = Split-Path -Parent $MyInvocation.MyCommand.Definition
