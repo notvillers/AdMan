@@ -324,15 +324,38 @@ $mainForm.Controls.Add($infoLabel)
 
 # Check process id for port
 function get_process_id_for_port{
-    Write-Host "Get process id for port"
+    $infoLabel.BackColor = ""
+    $infoLabel.Text = ""
+    $port = $portProcessTextbox.Text
+    if (!($port)) {
+        $infoLabel.BackColor = "Red"
+        $infoLabel.Text = "Port is not given"
+    } else {
+        if ($port -notlike ":*") {
+            $port = ":" + $port
+        }
+        $result = (netstat -ano | findstr $port)
+        if (!($result)) {
+            $infoLabel.BackColor = "Red"
+            $infoLabel.Text = "Port '$port' is not found"
+        } else {
+            $infoLabel.BackColor = "Lime"
+            $infoLabel.Text = "Port '$port' is found"
+            $processId = ($result -split '\s+')[5]
+            $infoLabel.Text = "Process ID for port '$port': $processId"
+        }
+    }
 }
+$portProcessTextbox.Add_KeyDown({TextBox-KeyPress -textbox $portProcessTextbox -key "Enter" -action ${Function:get_process_id_for_port}})
+$portProcessButton.Add_Click({
+    get_process_id_for_port
+})
 
 # Icon
 $scriptDirectory = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $iconPath = Join-Path -Path $scriptDirectory -ChildPath "adman.ico"
 if (Test-Path $iconPath) {
     $mainForm.Icon = [System.Drawing.Icon]::ExtractAssociatedIcon($iconPath)
-    $notifyIcon = New-Object System.Windows.Forms.NotifyIcon
 }
 
 # Show Form
