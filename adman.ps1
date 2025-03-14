@@ -342,7 +342,7 @@ function get_process_id_for_port{
             $infoLabel.BackColor = "Lime"
             $infoLabel.Text = "Port '$port' is found"
             $processId = ($result -split '\s+')[5]
-            $infoLabel.Text = "Process ID for port '$port': $processId"
+            $infoLabel.Text = "Process ID for port '$port': '$processId'"
         }
     }
 }
