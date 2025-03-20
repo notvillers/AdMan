@@ -1,8 +1,8 @@
-﻿#If (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-#    Write-Host "Requesting administrative privileges..."
-#    Start-Process powershell "-File `"$PSCommandPath`"" -Verb RunAs
-#    Exit
-#}
+﻿If (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+    Write-Host "Requesting administrative privileges..."
+    Start-Process powershell "-File `"$PSCommandPath`"" -Verb RunAs
+    Exit
+}
 
 # Hide PowerShell Console
 Add-Type -Name Window -Namespace Console -MemberDefinition '
